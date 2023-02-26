@@ -1,0 +1,574 @@
+part of 'pages.dart';
+
+class HalamanTambahSaksiNew extends StatefulWidget {
+  @override
+  State<HalamanTambahSaksiNew> createState() => _HalamanTambahSaksiNewState();
+}
+
+class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
+  File? _filefoto;
+
+  List<DataKabupaten?> datakabupaten = [];
+  List<DataKecamatan?> datakecamatan = [];
+  List<DataProvinsi?> dataprovinsi = [];
+  List<String> itemkecamatan = [];
+  List<String> itemprovinsi = [];
+  List<String> itemkabupaten = [];
+
+  String? selectedkecamatan;
+  String? selectedkota;
+  String? selectedprovinsi;
+
+  Future pickfoto() async {
+    final myfile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      _filefoto = File(myfile!.path);
+    });
+  }
+
+  _tambahdata() {
+    context.read<DatasaksiBloc>().add(TambahDatasaksi(
+          nama_saksi: namasaksicontrol.text,
+          alamat: alamatcontrol.text,
+          no_hp: nohpcontrol.text,
+          role: rolecontrol.text,
+          nik: noktp.text,
+          password: passwordcontrol.text,
+          email: emailcontrol.text,
+          Province_id: dataprovinsi
+              .firstWhere((e) => e!.name.toString() == selectedprovinsi)!
+              .id
+              .toString(),
+          district_id: datakecamatan
+              .firstWhere((e) => e!.name.toString() == selectedkecamatan)!
+              .id
+              .toString(),
+          tps_id: tpscontrol.text,
+          saksi: _filefoto,
+          regency_id: datakabupaten
+              .firstWhere((e) => e!.name.toString() == selectedkota)!
+              .id
+              .toString(),
+        ));
+  }
+
+  TextEditingController namasaksicontrol = TextEditingController();
+
+  TextEditingController noktp = TextEditingController();
+
+  TextEditingController alamatcontrol = TextEditingController();
+  TextEditingController emailcontrol = TextEditingController();
+  TextEditingController tempatlahircontrol = TextEditingController();
+  TextEditingController tanggalahircontrol = TextEditingController();
+  TextEditingController rolecontrol = TextEditingController();
+  TextEditingController passwordcontrol = TextEditingController();
+  TextEditingController agamacontrol = TextEditingController();
+  TextEditingController jeniskelamincontrol = TextEditingController();
+  TextEditingController tpscontrol = TextEditingController();
+  TextEditingController kabupatencontrol = TextEditingController();
+  TextEditingController provinsicontrol = TextEditingController();
+  TextEditingController nohpcontrol = TextEditingController();
+
+  @override
+  initState() {
+    super.initState();
+    auth.getdatakecamatan().then((value) => datakecamatan = value!);
+    auth.getdatakabupaten().then((value) => datakabupaten = value!);
+    auth.getdataprovinsi().then((value) => dataprovinsi = value!);
+    tanggalahircontrol.text = '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (p0, p1) => Stack(children: [
+        BlocBuilder<DatasaksiBloc, DatasaksiState>(
+          builder: (context, state) {
+            if (state is DatasaksiUpdate) {
+              if (state.update == true) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: 'Data Berhasil Disimpan',
+                      onConfirmBtnTap: () {
+                        Navigator.pop(context);
+                      },
+                      confirmBtnColor: colorbiru,
+                      confirmBtnTextStyle: textpoppin.copyWith(color: putih));
+                });
+              }
+              if (state.update == false) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      text: 'Data Gagal Disimpan',
+                      confirmBtnColor: colorbiru,
+                      confirmBtnTextStyle: textpoppin);
+                });
+              }
+            }
+
+            return SizedBox();
+          },
+        ),
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Tambah Data Saksi",
+                textAlign: TextAlign.start,
+                style: textpoppin.copyWith(fontWeight: FontWeight.w600),
+              ),
+              SizedBox(
+                height: p1.maxHeight * 0.02,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Nama Saksi',
+                    style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                  ),
+                  Container(
+                    width: p1.maxWidth,
+                    height: p1.maxHeight * 0.05,
+                    decoration: BoxDecoration(
+                        color: putih,
+                        border: Border.all(width: 1.0, color: hitam),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextField(
+                      controller: namasaksicontrol,
+                      maxLines: 1,
+                      onTap: () {
+                        setState(() {
+                          var data = dataprovinsi
+                              .map((e) => e!.name.toString())
+                              .toList();
+                          itemprovinsi = data;
+                        });
+                      },
+                      style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Alamat',
+                    style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                  ),
+                  Container(
+                    width: p1.maxWidth,
+                    height: p1.maxHeight * 0.05,
+                    decoration: BoxDecoration(
+                        color: putih,
+                        border: Border.all(width: 1.0, color: hitam),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextField(
+                      controller: alamatcontrol,
+                      maxLines: 1,
+                      style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'No.KTP',
+                    style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                  ),
+                  Container(
+                    width: p1.maxWidth,
+                    height: p1.maxHeight * 0.05,
+                    decoration: BoxDecoration(
+                        color: putih,
+                        border: Border.all(width: 1.0, color: hitam),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextField(
+                      controller: noktp,
+                      maxLines: 1,
+                      style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Email',
+                        style:
+                            textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      ),
+                      Container(
+                        width: p1.maxWidth * 0.45,
+                        height: p1.maxHeight * 0.05,
+                        decoration: BoxDecoration(
+                            color: putih,
+                            border: Border.all(width: 1.0, color: hitam),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: TextField(
+                          controller: emailcontrol,
+                          maxLines: 1,
+                          style: textpoppin.copyWith(
+                              fontSize: p1.maxHeight * 0.02),
+                          decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                        ),
+                      )
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'No.HP',
+                        style:
+                            textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      ),
+                      Container(
+                        width: p1.maxWidth * 0.45,
+                        height: p1.maxHeight * 0.05,
+                        decoration: BoxDecoration(
+                            color: putih,
+                            border: Border.all(width: 1.0, color: hitam),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          controller: nohpcontrol,
+                          maxLines: 1,
+                          style: textpoppin.copyWith(
+                              fontSize: p1.maxHeight * 0.02),
+                          decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Provinsi",
+                    style: textpoppin,
+                  ),
+                  DropdownSearch<String>(
+                    selectedItem: selectedprovinsi,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedprovinsi = value;
+                        setState(() {
+                          var item = dataprovinsi
+                              .firstWhere((e) =>
+                                  e!.name.toString() == selectedprovinsi)!
+                              .id;
+                          var databaru = datakabupaten
+                              .where((ite) =>
+                                  ite!.id.toString().contains(item.toString()))
+                              .toList();
+                          datakabupaten = databaru;
+                          var data =
+                              databaru.map((e) => e!.name.toString()).toList();
+                          itemkabupaten = data;
+                        });
+                      });
+                    },
+                    items: itemprovinsi,
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                        baseStyle:
+                            textpoppin.copyWith(fontWeight: FontWeight.w600),
+                        dropdownSearchDecoration: InputDecoration(
+                            hintText: 'Pilih Provinsi',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)))),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Kabupaten / Kota",
+                    style: textpoppin,
+                  ),
+                  DropdownSearch<String>(
+                    selectedItem: selectedkota,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedkota = value;
+                        var item = datakabupaten
+                            .firstWhere(
+                                (e) => e!.name.toString() == selectedkota)!
+                            .id;
+                        var databaru = datakecamatan
+                            .where((ite) =>
+                                ite!.id.toString().contains(item.toString()))
+                            .toList();
+                        datakecamatan = databaru;
+                        var data =
+                            databaru.map((e) => e!.name.toString()).toList();
+                        itemkecamatan = data;
+                      });
+                      setState(() {
+                        selectedkota = value;
+                      });
+                    },
+                    items: itemkabupaten,
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                        baseStyle:
+                            textpoppin.copyWith(fontWeight: FontWeight.w600),
+                        dropdownSearchDecoration: InputDecoration(
+                            hintText: 'Pilih Kabupaten / Kota',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)))),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Kecamatan",
+                    style: textpoppin,
+                  ),
+                  DropdownSearch<String>(
+                    selectedItem: selectedkecamatan,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedkecamatan = value;
+                      });
+                    },
+                    items: itemkecamatan,
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                        baseStyle:
+                            textpoppin.copyWith(fontWeight: FontWeight.w600),
+                        dropdownSearchDecoration: InputDecoration(
+                            hintText: 'Pilih Kecamatan',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)))),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Role',
+                    style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                  ),
+                  Container(
+                    width: p1.maxWidth,
+                    height: p1.maxHeight * 0.05,
+                    decoration: BoxDecoration(
+                        color: putih,
+                        border: Border.all(width: 1.0, color: hitam),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextField(
+                      controller: rolecontrol,
+                      maxLines: 1,
+                      style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Password',
+                    style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                  ),
+                  Container(
+                    width: p1.maxWidth,
+                    height: p1.maxHeight * 0.05,
+                    decoration: BoxDecoration(
+                        color: putih,
+                        border: Border.all(width: 1.0, color: hitam),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextField(
+                      controller: passwordcontrol,
+                      maxLines: 1,
+                      style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'TPS',
+                    style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                  ),
+                  Container(
+                    width: p1.maxWidth,
+                    height: p1.maxHeight * 0.05,
+                    decoration: BoxDecoration(
+                        color: putih,
+                        border: Border.all(width: 1.0, color: hitam),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextField(
+                      controller: tpscontrol,
+                      maxLines: 1,
+                      style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.only(top: 5, left: 5)),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: p1.maxHeight * 0.02,
+              ),
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(8),
+                    width: p1.maxWidth * 0.4,
+                    height: p1.maxHeight * 0.05,
+                    decoration: BoxDecoration(
+                        color: colorbiru,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                              color: hitam.withOpacity(0.2),
+                              offset: const Offset(3, 3))
+                        ]),
+                    child: TextButton(
+                        onPressed: () {
+                          pickfoto();
+                        },
+                        child: Text(
+                          "Upload Foto",
+                          style: textpoppin.copyWith(
+                              fontSize: p1.maxHeight * 0.02,
+                              color: putih,
+                              fontWeight: FontWeight.w600),
+                        )),
+                  ),
+                  // Container(
+                  //   width: p1.maxWidth * 0.4,
+                  //   height: p1.maxHeight * 0.05,
+                  //   decoration: BoxDecoration(
+                  //       color: colorbiru,
+                  //       borderRadius: BorderRadius.circular(15),
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //             color: hitam.withOpacity(0.2), offset: Offset(3, 3))
+                  //       ]),
+                  //   child: TextButton(
+                  //       onPressed: () {
+                  //         pickktp();
+                  //       },
+                  //       child: Text(
+                  //         "SCAN KTP",
+                  //         style: textpoppin.copyWith(
+                  //             fontSize: p1.maxHeight * 0.016,
+                  //             color: putih,
+                  //             fontWeight: FontWeight.w600),
+                  //       )),
+                  // ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: p1.maxWidth * 0.39, top: p1.maxHeight * 0.02),
+                child: Row(
+                  children: [
+                    Container(
+                      width: p1.maxWidth * 0.3,
+                      height: p1.maxHeight * 0.07,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: putih,
+                          border: Border.all(color: colorbiru, width: 1.0)),
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Batal",
+                            style: textpoppin.copyWith(
+                                fontSize: p1.maxHeight * 0.02,
+                                color: colorbiru,
+                                fontWeight: FontWeight.w600),
+                          )),
+                    ),
+                    SizedBox(
+                      width: p1.maxWidth * 0.01,
+                    ),
+                    Container(
+                      width: p1.maxWidth * 0.3,
+                      height: p1.maxHeight * 0.07,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                                color: hitam.withOpacity(0.2),
+                                offset: const Offset(3, 3))
+                          ],
+                          color: colorbiru,
+                          border: Border.all(color: colorbiru, width: 1.0)),
+                      child: TextButton(
+                          onPressed: () {
+                            _tambahdata();
+                          },
+                          child: Text(
+                            "Simpan",
+                            style: textpoppin.copyWith(
+                                fontSize: p1.maxHeight * 0.02,
+                                color: putih,
+                                fontWeight: FontWeight.w600),
+                          )),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ]),
+    );
+  }
+}
