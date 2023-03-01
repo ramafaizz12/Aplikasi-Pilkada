@@ -140,6 +140,8 @@ class _HalamanDataRelawanState extends State<HalamanDataRelawan> {
                         crossAxisSpacing: 5),
                     itemBuilder: (context, index) => FutureBuilder<SemuaDaerah>(
                       future: auth.getprovkabupatenkecamatan(
+                          gruprelawan:
+                              _foundUsers[index].gruprelawan_id.toString(),
                           kabupaten: _foundUsers[index].regency_id.toString()),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -172,9 +174,8 @@ class _HalamanDataRelawanState extends State<HalamanDataRelawan> {
                                                 jeniskelamin: _foundUsers[index]
                                                     .jkl
                                                     .toString(),
-                                                gruprelawan: _foundUsers[index]
-                                                    .gruprelawan_id
-                                                    .toString(),
+                                                gruprelawan:
+                                                    snapshot.data!.gruprelawan,
                                                 kabupaten:
                                                     snapshot.data!.kabupaten),
                                           )));
@@ -207,7 +208,7 @@ class _HalamanDataRelawanState extends State<HalamanDataRelawan> {
                                     Flexible(
                                       flex: 1,
                                       child: Text(
-                                        '${_foundUsers[index].nama}\n${_foundUsers[index].gruprelawan_id}',
+                                        '${_foundUsers[index].nama}\n${snapshot.data!.gruprelawan}',
                                         textAlign: TextAlign.start,
                                         overflow: TextOverflow.ellipsis,
                                         style: textpoppin.copyWith(
@@ -221,7 +222,7 @@ class _HalamanDataRelawanState extends State<HalamanDataRelawan> {
                             ),
                           );
                         }
-                        return CircularProgressIndicator(
+                        return SpinKitDualRing(
                           color: colororange,
                         );
                       },

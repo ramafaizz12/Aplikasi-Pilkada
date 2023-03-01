@@ -149,7 +149,7 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
                               ),
                             );
                           }
-                          return CircularProgressIndicator(
+                          return SpinKitDualRing(
                             color: colororange,
                           );
                         },

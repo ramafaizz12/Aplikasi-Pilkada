@@ -1,6 +1,9 @@
 part of 'pages.dart';
 
 class HalamanTambahDataRelawan extends StatefulWidget {
+  // File? scanktp;
+
+  //HalamanTambahDataRelawan({this.pictureFile});
   @override
   State<HalamanTambahDataRelawan> createState() =>
       _HalamanTambahDataRelawanState();
@@ -8,7 +11,8 @@ class HalamanTambahDataRelawan extends StatefulWidget {
 
 class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
   File? _filefoto;
-  File? _scanktp;
+  // File? _scanktp;
+  XFile? pictureFile;
   List<DataKabupaten?> datakabupaten = [];
   List<DataKecamatan?> datakecamatan = [];
   List<DataProvinsi?> dataprovinsi = [];
@@ -36,12 +40,12 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
     });
   }
 
-  Future pickktp() async {
-    final myfile = await ImagePicker().pickImage(source: ImageSource.camera);
-    setState(() {
-      _scanktp = File(myfile!.path);
-    });
-  }
+  // Future pickktp() async {
+  //   final myfile = await ImagePicker().pickImage(source: ImageSource.camera);
+  //   setState(() {
+  //     _scanktp = File(myfile!.path);
+  //   });
+  // }
 
   _tambahdata() {
     context.read<DatarelawanBloc>().add(TambahDataRelawan(
@@ -52,7 +56,7 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
         agama: selectedagama,
         jkl: selectedjkl,
         foto: _filefoto,
-        scan_ktp: _scanktp,
+        scan_ktp: File(pictureFile!.path),
         gruprelawan_id: datagruprelawan
             .firstWhere((e) => e.nama_grup.toString() == selectedgrup)
             .id
@@ -577,8 +581,17 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                               offset: Offset(3, 3))
                         ]),
                     child: TextButton(
-                        onPressed: () {
-                          pickktp();
+                        onPressed: () async {
+                          pictureFile = await availableCameras().then(
+                            (value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CameraPage(
+                                  cameras: value,
+                                ),
+                              ),
+                            ),
+                          );
                         },
                         child: Text(
                           "SCAN KTP",

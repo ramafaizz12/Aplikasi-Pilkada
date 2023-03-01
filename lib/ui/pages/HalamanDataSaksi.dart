@@ -201,7 +201,7 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                                 ),
                               );
                             }
-                            return CircularProgressIndicator(
+                            return SpinKitDualRing(
                               color: colororange,
                             );
                           },

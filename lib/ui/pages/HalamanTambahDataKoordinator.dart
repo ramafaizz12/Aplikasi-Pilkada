@@ -9,7 +9,8 @@ class HalamanTambahDataKoordinator extends StatefulWidget {
 class _HalamanTambahDataKoordinatorState
     extends State<HalamanTambahDataKoordinator> {
   File? _file;
-  File? _scanktp;
+
+  XFile? pictureFile;
   List<DataKabupaten?> datakabupaten = [];
   List<DataKecamatan?> datakecamatan = [];
   List<DataProvinsi?> dataprovinsi = [];
@@ -32,12 +33,12 @@ class _HalamanTambahDataKoordinatorState
     });
   }
 
-  Future pickktp() async {
-    final myfile = await ImagePicker().pickImage(source: ImageSource.camera);
-    setState(() {
-      _scanktp = File(myfile!.path);
-    });
-  }
+  // Future pickktp() async {
+  //   final myfile = await ImagePicker().pickImage(source: ImageSource.camera);
+  //   setState(() {
+  //     _scanktp = File(myfile!.path);
+  //   });
+  // }
 
   _tambahdata() {
     context.read<DatakoordinatorBloc>().add(TambahDataKoordinator(
@@ -47,7 +48,7 @@ class _HalamanTambahDataKoordinatorState
         tanggal_lahir: tanggalahircontrol.text,
         agama: selectedagama,
         jkl: selectedjkl,
-        scan_ktp: _scanktp,
+        scan_ktp: File(pictureFile!.path),
         foto: _file,
         regency_id: datakabupaten
             .firstWhere((e) => e!.name.toString() == selectedkota)!
@@ -489,8 +490,17 @@ class _HalamanTambahDataKoordinatorState
                               offset: Offset(3, 3))
                         ]),
                     child: TextButton(
-                        onPressed: () {
-                          pickktp();
+                        onPressed: () async {
+                          pictureFile = await availableCameras().then(
+                            (value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CameraPage(
+                                  cameras: value,
+                                ),
+                              ),
+                            ),
+                          );
                         },
                         child: Text(
                           "SCAN KTP",

@@ -3,6 +3,7 @@ part of 'pages.dart';
 class HalamanHome extends StatelessWidget {
   dynamic haldata;
   dynamic dashboard;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
 
   HalamanHome({this.haldata, this.dashboard});
   @override
@@ -103,7 +104,19 @@ class HalamanHome extends StatelessWidget {
             height: p1.maxHeight * 0.04,
           ),
           SizedBox(
-              width: p1.maxWidth, height: p1.maxHeight * 0.45, child: dashboard)
+              width: p1.maxWidth,
+              height: p1.maxHeight * 0.45,
+              child: dashboard),
+          // CountdownTimer(
+          //   endTime: endTime,
+          //   widgetBuilder: (context, time) {
+          //     if (time == null) {
+          //       return Text('Game over');
+          //     }
+          //     return Text(
+          //         'days: [ ${time.days} ], hours: [ ${time.hours} ], min: [ ${time.min} ], sec: [ ${time.sec} ]');
+          //   },
+          // )
         ],
       ),
     );

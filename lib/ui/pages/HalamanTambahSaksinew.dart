@@ -152,6 +152,7 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                       },
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
+                          hintText: 'Masukkan Nama Saksi',
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -178,6 +179,7 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                       maxLines: 1,
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
+                          hintText: 'Masukkan Alamat',
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -200,10 +202,12 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                         border: Border.all(width: 1.0, color: hitam),
                         borderRadius: BorderRadius.circular(12)),
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: noktp,
                       maxLines: 1,
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
+                          hintText: 'Masukkan No.Ktp',
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -235,6 +239,7 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                           style: textpoppin.copyWith(
                               fontSize: p1.maxHeight * 0.02),
                           decoration: const InputDecoration(
+                              hintText: 'Masukkan Email',
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -264,6 +269,7 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                           style: textpoppin.copyWith(
                               fontSize: p1.maxHeight * 0.02),
                           decoration: const InputDecoration(
+                              hintText: 'Masukkan No.Hp',
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -399,6 +405,7 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                       maxLines: 1,
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
+                          hintText: 'Masukkan Role',
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -425,6 +432,7 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                       maxLines: 1,
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
+                          hintText: 'Masukkan Password',
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -451,6 +459,7 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                       maxLines: 1,
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
+                          hintText: 'Masukkan Tps',
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.only(top: 5, left: 5)),
@@ -487,28 +496,6 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                               fontWeight: FontWeight.w600),
                         )),
                   ),
-                  // Container(
-                  //   width: p1.maxWidth * 0.4,
-                  //   height: p1.maxHeight * 0.05,
-                  //   decoration: BoxDecoration(
-                  //       color: colorbiru,
-                  //       borderRadius: BorderRadius.circular(15),
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //             color: hitam.withOpacity(0.2), offset: Offset(3, 3))
-                  //       ]),
-                  //   child: TextButton(
-                  //       onPressed: () {
-                  //         pickktp();
-                  //       },
-                  //       child: Text(
-                  //         "SCAN KTP",
-                  //         style: textpoppin.copyWith(
-                  //             fontSize: p1.maxHeight * 0.016,
-                  //             color: putih,
-                  //             fontWeight: FontWeight.w600),
-                  //       )),
-                  // ),
                 ],
               ),
               Padding(

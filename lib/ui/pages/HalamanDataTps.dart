@@ -26,7 +26,20 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
   List<Datatps> _foundUsers = [];
   List<String> kota = [];
   List<String> itemtps = [];
-  List<String> itemprovinsi = [];
+  List<String> itemprovinsi = [
+    'SULAWESI SELATAN',
+    'ACEH',
+    'SUMATERA UTARA',
+    'SUMATERA BARAT',
+    'RIAU'
+  ];
+  List<String> itemkabupaten = [
+    'KOTA MAKASSAR',
+    'KABUPATEN BULUKUMBA',
+    'KABUPATEN SOPPENG',
+    'KABUPATEN NIAS',
+    'KABUPATEN LANGKAT'
+  ];
   String? selectedprovinsi;
   String? selectedtps;
   String? selectedkota;
@@ -34,6 +47,8 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
   void initState() {
     auth.getdatakabupaten().then((value) => datakabupaten = value!);
     auth.getdataprovinsi().then((value) => dataprovinsi = value!);
+    // var dataprov = dataprovinsi.map((e) => e!.name.toString()).toList();
+    // itemprovinsi = dataprov;
     var data = context.read<DatatpsBloc>().state;
     if (data is DatatpsLoaded) {
       _allUsers = data.data!;
@@ -42,15 +57,13 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
     super.initState();
   }
 
-  void _runFilter(String enteredKeyword) {
+  void _runFilterprovinsi(String enteredKeyword) {
     List<Datatps> results = [];
     if (enteredKeyword.isEmpty) {
       results = _allUsers;
     } else {
       results = _allUsers
-          .where((user) => user.regency_id!
-              .toLowerCase()
-              .contains(enteredKeyword.toLowerCase()))
+          .where((user) => user.Province_id!.contains(enteredKeyword))
           .toList();
     }
     setState(() {
@@ -58,17 +71,22 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
     });
   }
 
-  Future<List<String>> kekabupaten() async {
-    var data = _foundUsers.map((e) => e.regency_id.toString()).toList();
-    return data;
+  void _runFilterkabupaten(String enteredKeyword) {
+    List<Datatps> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = _allUsers;
+    } else {
+      results = _allUsers
+          .where((user) => user.regency_id!.contains(enteredKeyword))
+          .toList();
+    }
+    setState(() {
+      _foundUsers = results;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      var data = dataprovinsi.map((e) => e!.name.toString()).toList();
-      itemprovinsi = data;
-    });
     context.read<DatatpsBloc>().add(Datatpsconnect());
     return LayoutBuilder(
       builder: (p0, p1) => SingleChildScrollView(
@@ -110,10 +128,15 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
 
             DropdownSearch<String>(
               selectedItem: selectedtps,
+              items: itemprovinsi,
               onChanged: (value) {
-                kekabupaten();
                 setState(() {
                   selectedtps = value;
+                  var baru = dataprovinsi
+                      .firstWhere((e) => e!.name.toString() == selectedtps)!
+                      .id
+                      .toString();
+                  _runFilterprovinsi(baru.toString());
                 });
               },
               dropdownDecoratorProps: DropDownDecoratorProps(
@@ -127,14 +150,14 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
               height: p1.maxHeight * 0.02,
             ),
             DropdownSearch<String>(
-              selectedItem: selectedtps,
+              selectedItem: selectedkota,
               onChanged: (value) {
                 setState(() {
                   selectedkota = value;
-                  _runFilter(value.toString());
+                  _runFilterkabupaten(selectedkota.toString());
                 });
               },
-              items: kota,
+              items: itemkabupaten,
               dropdownDecoratorProps: DropDownDecoratorProps(
                   baseStyle: textpoppin.copyWith(fontWeight: FontWeight.w600),
                   dropdownSearchDecoration: InputDecoration(
@@ -260,7 +283,7 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                                                         FontWeight.w600),
                                               ),
                                               Text(
-                                                '${snapshot.data!.kecamatan}',
+                                                '${_foundUsers[index].district_id.toString()}',
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.fade,
                                                 style: textpoppin.copyWith(

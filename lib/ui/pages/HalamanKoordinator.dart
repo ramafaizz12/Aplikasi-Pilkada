@@ -68,6 +68,7 @@ class HalamanKoordinator extends StatelessWidget {
                         itemBuilder: (context, index) =>
                             FutureBuilder<SemuaDaerah>(
                           future: auth.getprovkabupatenkecamatan(
+                              gruprelawan: state.data![index].id.toString(),
                               provinsi:
                                   state.data![index].Province_id.toString(),
                               kabupaten:
@@ -94,9 +95,8 @@ class HalamanKoordinator extends StatelessWidget {
                                                   agama: state
                                                       .data![index].agama
                                                       .toString(),
-                                                  gruprelawan: state
-                                                      .data![index].id
-                                                      .toString(),
+                                                  gruprelawan: snapshot
+                                                      .data!.gruprelawan,
                                                   provinsi:
                                                       snapshot.data!.provinsi,
                                                   kabupaten:
@@ -142,7 +142,7 @@ class HalamanKoordinator extends StatelessWidget {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              '${state.data![index].nama_lengkap}\n${state.data![index].id}',
+                                              '${state.data![index].nama_lengkap}\n${snapshot.data!.gruprelawan}',
                                               textAlign: TextAlign.start,
                                               style: textpoppin.copyWith(
                                                   fontSize: p1.maxHeight * 0.02,
@@ -156,7 +156,7 @@ class HalamanKoordinator extends StatelessWidget {
                                 ),
                               );
                             }
-                            return CircularProgressIndicator(
+                            return SpinKitDualRing(
                               color: colororange,
                             );
                           },

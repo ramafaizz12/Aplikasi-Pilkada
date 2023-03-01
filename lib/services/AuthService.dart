@@ -471,9 +471,11 @@ class Authentication {
 
   Future<SemuaDaerah> getprovkabupatenkecamatan(
       {String provinsi = '11',
+      String gruprelawan = '1',
       String kabupaten = '1101',
       String kecamatan = '1101010'}) async {
     var dataprovinsi = await getdataprovinsi();
+    var datagruprelawan = await getdatagruprelawan();
     var datakabupaten = await getdatakabupaten();
     var datakecamatan = await getdatakecamatan();
     var kabupatenbaru = datakabupaten!
@@ -485,13 +487,17 @@ class Authentication {
         .firstWhere((e) => e.id.toString() == provinsi)
         .name
         .toString();
-
+    var gruprelawang = datagruprelawan!
+        .firstWhere((e) => e.id.toString() == gruprelawan)
+        .nama_grup
+        .toString();
     var kecamatanbaru = datakecamatan!
         .firstWhere((e) => e.id.toString() == kecamatan)
         .name
         .toString();
 
     return SemuaDaerah(
+        gruprelawan: gruprelawang,
         provinsi: provinsibaru,
         kecamatan: kecamatanbaru,
         kabupaten: kabupatenbaru);

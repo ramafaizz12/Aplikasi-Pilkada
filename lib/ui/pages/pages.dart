@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:camera/camera.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:email_validator/email_validator.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,6 +46,8 @@ part 'HalamanLoading.dart';
 part 'loadingpage.dart';
 part 'loginpage.dart';
 part 'Role.dart';
+part 'Halamancamerabaru.dart';
+part 'HalamanCamera.dart';
 part 'Dashboard/DashboardKoordinator.dart';
 part 'HomePage.dart';
 part 'HalamanCaleg.dart';
