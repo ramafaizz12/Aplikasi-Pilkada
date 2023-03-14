@@ -12,7 +12,6 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   late CameraController controller;
   XFile? pictureFile;
-  File? _filefoto;
 
   @override
   void initState() {

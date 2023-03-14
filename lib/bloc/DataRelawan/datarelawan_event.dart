@@ -3,7 +3,11 @@ part of 'datarelawan_bloc.dart';
 @immutable
 abstract class DatarelawanEvent {}
 
-class DataRelawanConnect extends DatarelawanEvent {}
+class DataRelawanConnect extends DatarelawanEvent {
+  String page;
+
+  DataRelawanConnect({this.page = ''});
+}
 
 class TambahDataRelawan extends DatarelawanEvent {
   String? nama;
@@ -40,3 +44,9 @@ class TambahDataRelawan extends DatarelawanEvent {
 class GrupRelawanConnect extends DatarelawanEvent {}
 
 class DataRelawanNew extends DatarelawanEvent {}
+
+class DatarelawanSearch extends DatarelawanEvent {
+  String? value;
+
+  DatarelawanSearch({this.value});
+}

@@ -27,11 +27,6 @@ class MyApp extends StatelessWidget {
   AuthBloc authbloc = AuthBloc();
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   home: Scaffold(
-    //     body: NikValid(),
-    //   ),
-    // );
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
@@ -71,8 +66,6 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: LoadingPage(),
-        // routerDelegate: _appRouter.delegate(),
-        // routeInformationParser: _appRouter.defaultRouteParser(),
       ),
     );
   }

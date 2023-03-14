@@ -3,7 +3,11 @@ part of 'datasaksi_bloc.dart';
 @immutable
 abstract class DatasaksiEvent {}
 
-class DatasaksiConnect extends DatasaksiEvent {}
+class DatasaksiConnect extends DatasaksiEvent {
+  String page;
+
+  DatasaksiConnect({this.page = ''});
+}
 
 class TambahDatasaksi extends DatasaksiEvent {
   String? nama_saksi;

@@ -3,7 +3,8 @@ part of 'pages.dart';
 class HalamanHome extends StatelessWidget {
   dynamic haldata;
   dynamic dashboard;
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
+
+  //int date = DateTime.fromMillisecondsSinceEpoch(value * 1000);
 
   HalamanHome({this.haldata, this.dashboard});
   @override
@@ -107,16 +108,6 @@ class HalamanHome extends StatelessWidget {
               width: p1.maxWidth,
               height: p1.maxHeight * 0.45,
               child: dashboard),
-          // CountdownTimer(
-          //   endTime: endTime,
-          //   widgetBuilder: (context, time) {
-          //     if (time == null) {
-          //       return Text('Game over');
-          //     }
-          //     return Text(
-          //         'days: [ ${time.days} ], hours: [ ${time.hours} ], min: [ ${time.min} ], sec: [ ${time.sec} ]');
-          //   },
-          // )
         ],
       ),
     );

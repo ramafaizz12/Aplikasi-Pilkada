@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:pilkada/models/datadaerah.dart';
 import 'package:pilkada/models/datagruprelawan.dart';
 import 'package:pilkada/models/datarelawan.dart';
 import 'package:pilkada/services/AuthService.dart';
@@ -12,10 +13,38 @@ part 'datarelawan_state.dart';
 class DatarelawanBloc extends Bloc<DatarelawanEvent, DatarelawanState> {
   DatarelawanBloc({Authentication? auth}) : super(DatarelawanInitial()) {
     auth = Authentication();
+    List<DataRelawan>? data = [];
+    List<DataRelawan>? foundUsers = [];
+    List<String> listgrup = [];
+    List<String> listkabupaten = [];
+    kedaerahlist() async {
+      var datagruprelawan = await auth!.getdatagruprelawan();
+      var datakabupaten = await auth.getdatakabupaten();
+      listgrup = [
+        for (var x in data!)
+          datagruprelawan!
+              .firstWhere((e) => e.id.toString() == x.gruprelawan_id.toString())
+              .nama_grup
+              .toString()
+      ];
+      listkabupaten = [
+        for (var x in data!)
+          datakabupaten!
+              .firstWhere((e) => e.id.toString() == x.regency_id.toString())
+              .name
+              .toString()
+      ];
+    }
+
     on<DatarelawanEvent>((event, emit) async {
       if (event is DataRelawanConnect) {
-        var data = await auth!.getdatarelawan();
-        emit(DataRelawanLoaded(data: data));
+        data = await auth!.getdatarelawan(page: event.page);
+        await kedaerahlist();
+        foundUsers = data;
+        emit(DataRelawanLoaded(
+            data: foundUsers,
+            gruprelawan: listgrup,
+            datakabupaten: listkabupaten));
       }
       if (event is DataRelawanNew) {
         var data = await auth!.getdatarelawan();
@@ -43,6 +72,26 @@ class DatarelawanBloc extends Bloc<DatarelawanEvent, DatarelawanState> {
       if (event is GrupRelawanConnect) {
         var data = await auth!.getdatagruprelawan();
         emit(DataGruprelawanLoaded(data: data));
+      }
+      if (event is DatarelawanSearch) {
+        List<DataRelawan> results = [];
+
+        if (event.value!.isEmpty) {
+          results = data!;
+          await kedaerahlist();
+        } else {
+          results = data!
+              .where((e) =>
+                  e.nama!.toLowerCase().contains(event.value!.toLowerCase()))
+              .toList();
+          await kedaerahlist();
+        }
+        foundUsers = results;
+
+        emit(DataRelawanLoaded(
+            data: foundUsers,
+            datakabupaten: listkabupaten,
+            gruprelawan: listgrup));
       }
     });
   }

@@ -7,8 +7,10 @@ class DatarelawanInitial extends DatarelawanState {}
 
 class DataRelawanLoaded extends DatarelawanState {
   List<DataRelawan>? data;
+  List<String>? gruprelawan;
+  List<String>? datakabupaten;
 
-  DataRelawanLoaded({this.data});
+  DataRelawanLoaded({this.data, this.gruprelawan, this.datakabupaten});
 }
 
 class DataRelawanUpdate extends DatarelawanState {

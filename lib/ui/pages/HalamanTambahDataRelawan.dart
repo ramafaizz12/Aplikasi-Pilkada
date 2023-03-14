@@ -1,9 +1,6 @@
 part of 'pages.dart';
 
 class HalamanTambahDataRelawan extends StatefulWidget {
-  // File? scanktp;
-
-  //HalamanTambahDataRelawan({this.pictureFile});
   @override
   State<HalamanTambahDataRelawan> createState() =>
       _HalamanTambahDataRelawanState();
@@ -39,13 +36,6 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
       _filefoto = File(myfile!.path);
     });
   }
-
-  // Future pickktp() async {
-  //   final myfile = await ImagePicker().pickImage(source: ImageSource.camera);
-  //   setState(() {
-  //     _scanktp = File(myfile!.path);
-  //   });
-  // }
 
   _tambahdata() {
     context.read<DatarelawanBloc>().add(TambahDataRelawan(
@@ -164,18 +154,6 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                       keyboardType: TextInputType.name,
                       controller: namarelawancontrol,
                       maxLines: 1,
-                      onTap: () {
-                        setState(() {
-                          var data = dataprovinsi
-                              .map((e) => e!.name.toString())
-                              .toList();
-                          itemprovinsi = data;
-                          var datagr = datagruprelawan
-                              .map((e) => e.nama_grup.toString())
-                              .toList();
-                          itemgruprelawan = datagr;
-                        });
-                      },
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
                           hintText: 'Masukkan Nama Relawan',
@@ -251,7 +229,6 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                             fontWeight: FontWeight.w600, color: colororange),
                       ),
               ]),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -280,7 +257,6 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                   )
                 ],
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -373,7 +349,8 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                   ),
                   DropdownSearch<String>(
                     selectedItem: selectedgrup,
-                    items: itemgruprelawan,
+                    asyncItems: (String? filter) => auth.getnamagruprelawan(
+                        nama: selectedprovinsi.toString()),
                     onChanged: (value) {
                       setState(() {
                         selectedgrup = value;
@@ -439,42 +416,6 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                   )
                 ],
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     // Column(
-              //     //   crossAxisAlignment: CrossAxisAlignment.start,
-              //     //   children: [
-              //     //     Text(
-              //     //       'Agama',
-              //     //       style:
-              //     //           textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
-              //     //     ),
-              //     //     Container(
-              //     //       width: p1.maxWidth * 0.45,
-              //     //       height: p1.maxHeight * 0.05,
-              //     //       decoration: BoxDecoration(
-              //     //           color: putih,
-              //     //           border: Border.all(width: 1.0, color: hitam),
-              //     //           borderRadius: BorderRadius.circular(12)),
-              //     //       child: TextField(
-              //     //         keyboardType: TextInputType.name,
-              //     //         controller: agamacontrol,
-              //     //         maxLines: 1,
-              //     //         style: textpoppin.copyWith(
-              //     //             fontSize: p1.maxHeight * 0.02),
-              //     //         decoration: const InputDecoration(
-              //     //             border: InputBorder.none,
-              //     //             isDense: true,
-              //     //             contentPadding: EdgeInsets.only(top: 5, left: 5)),
-              //     //       ),
-              //     //     )
-              //     //   ],
-              //     // ),
-
-              //   ],
-              // ),
-
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,22 +429,10 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                     onChanged: (value) {
                       setState(() {
                         selectedprovinsi = value;
-                        setState(() {
-                          var item = dataprovinsi
-                              .firstWhere((e) => e!.name.toString() == value)!
-                              .id;
-                          var databaru = datakabupaten
-                              .where((ite) =>
-                                  ite!.id.toString().contains(item.toString()))
-                              .toList();
-                          datakabupaten = databaru;
-                          var data =
-                              databaru.map((e) => e!.name.toString()).toList();
-                          itemkabupaten = data;
-                        });
                       });
                     },
-                    items: itemprovinsi,
+                    asyncItems: (String? filter) => auth.getprovinsilist(
+                        provinsi: selectedprovinsi.toString()),
                     dropdownDecoratorProps: DropDownDecoratorProps(
                         baseStyle:
                             textpoppin.copyWith(fontWeight: FontWeight.w600),
@@ -529,7 +458,8 @@ class _HalamanTambahDataRelawanState extends State<HalamanTambahDataRelawan> {
                         selectedkota = value;
                       });
                     },
-                    items: itemkabupaten,
+                    asyncItems: (String? filter) => auth.getkabupatenlist(
+                        provinsi: selectedprovinsi.toString()),
                     dropdownDecoratorProps: DropDownDecoratorProps(
                         baseStyle:
                             textpoppin.copyWith(fontWeight: FontWeight.w600),

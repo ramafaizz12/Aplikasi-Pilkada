@@ -107,13 +107,14 @@ class Authentication {
     return alluser;
   }
 
-  Future<List<DataRelawan>?> getdatarelawan() async {
+  Future<List<DataRelawan>?> getdatarelawan({String page = ''}) async {
     var token = await gettoken();
     var user = await http.get(
         Uri.parse(
-            'https://web-sisfopilkada.taekwondosulsel.info/api/index/relawan'),
+            'https://web-sisfopilkada.taekwondosulsel.info/api/index/relawan?page=$page'),
         headers: {'Authorization': token.toString()});
-    Iterable data = (jsonDecode(user.body) as Map<String, dynamic>)['data'];
+    Iterable data =
+        (jsonDecode(user.body) as Map<String, dynamic>)['data']['data'];
     //var map1 = Map.fromIterable(data,
     //key: (e) => e['regency_id'], value: (e) => e['rw']);
     // map1.update('7371', (value) => 'Kabuoaten konkon');
@@ -125,13 +126,14 @@ class Authentication {
     return alluser;
   }
 
-  Future<List<Datatps>?> getdatatps() async {
+  Future<List<Datatps>?> getdatatps({String page = ''}) async {
     var token = await gettoken();
     var user = await http.get(
         Uri.parse(
-            'https://web-sisfopilkada.taekwondosulsel.info/api/index/tps'),
+            'https://web-sisfopilkada.taekwondosulsel.info/api/index/tps?page=$page'),
         headers: {'Authorization': token.toString()});
-    Iterable data = (jsonDecode(user.body) as Map<String, dynamic>)['data'];
+    Iterable data =
+        (jsonDecode(user.body) as Map<String, dynamic>)['data']['data'];
 
     List<Datatps> alluser = data.map((e) => Datatps.fromJson(e)).toList();
 
@@ -144,7 +146,8 @@ class Authentication {
         Uri.parse(
             'https://web-sisfopilkada.taekwondosulsel.info/api/index/gruprelawan'),
         headers: {'Authorization': token.toString()});
-    Iterable data = (jsonDecode(user.body) as Map<String, dynamic>)['data'];
+    Iterable data =
+        (jsonDecode(user.body) as Map<String, dynamic>)['data']['data'];
 
     List<DataGruprelawan> alluser =
         data.map((e) => DataGruprelawan.fromJson(e)).toList();
@@ -152,13 +155,14 @@ class Authentication {
     return alluser;
   }
 
-  Future<List<DataSaksi>?> getdatasaksi() async {
+  Future<List<DataSaksi>?> getdatasaksi({String page = ''}) async {
     var token = await gettoken();
     var user = await http.get(
         Uri.parse(
-            'https://web-sisfopilkada.taekwondosulsel.info/api/index/saksi'),
+            'https://web-sisfopilkada.taekwondosulsel.info/api/index/saksi?page=$page'),
         headers: {'Authorization': token.toString()});
-    Iterable data = (jsonDecode(user.body) as Map<String, dynamic>)['data'];
+    Iterable data =
+        (jsonDecode(user.body) as Map<String, dynamic>)['data']['data'];
 
     List<DataSaksi> alluser = data.map((e) => DataSaksi.fromJson(e)).toList();
 
@@ -208,7 +212,7 @@ class Authentication {
         filename: (scan_ktp.path),
         contentType: MediaType('image', (scan_ktp.path.toString())));
     formdata.files.add(MapEntry('foto', filefoto));
-    formdata.files.add(MapEntry('foto', filektp));
+    formdata.files.add(MapEntry('scan_ktp', filektp));
 
     var response = await dio.post(
       dio.options.baseUrl,
@@ -414,13 +418,14 @@ class Authentication {
     }
   }
 
-  Future<List<DataKordinator>?> getdatakordinator() async {
+  Future<List<DataKordinator>?> getdatakordinator({String page = ''}) async {
     var token = await gettoken();
     var user = await http.get(
         Uri.parse(
-            'https://web-sisfopilkada.taekwondosulsel.info/api/index/kordinator'),
+            'https://web-sisfopilkada.taekwondosulsel.info/api/index/kordinator?page=$page'),
         headers: {'Authorization': token.toString()});
-    Iterable data = (jsonDecode(user.body) as Map<String, dynamic>)['data'];
+    Iterable data =
+        (jsonDecode(user.body) as Map<String, dynamic>)['data']['data'];
 
     List<DataKordinator> alluser =
         data.map((e) => DataKordinator.fromJson(e)).toList();
@@ -447,7 +452,8 @@ class Authentication {
         Uri.parse(
             'https://web-sisfopilkada.taekwondosulsel.info/api/index/kandidat'),
         headers: {'Authorization': token.toString()});
-    Iterable data = (jsonDecode(user.body) as Map<String, dynamic>)['data'];
+    Iterable data =
+        (jsonDecode(user.body) as Map<String, dynamic>)['data']['data'];
 
     List<DataKandidat> alluser =
         data.map((e) => DataKandidat.fromJson(e)).toList();
@@ -579,10 +585,58 @@ class Authentication {
     return databaru;
   }
 
-  Future<List<String>> getnamagruprelawan() async {
+  Future<List<String>> getnamagruprelawan({String? nama = ''}) async {
     var data = await getdatagruprelawan();
     var databaru = data!.map((e) => e.nama_grup.toString()).toList();
     print(databaru[0]);
     return databaru;
   }
+
+  Future<List<String>> getkabupatenlist({String provinsi = '11'}) async {
+    List<String> itemkabupaten;
+    var dataprovinsi = await getdataprovinsi();
+    var datakabupaten = await getdatakabupaten();
+    var item =
+        dataprovinsi!.firstWhere((e) => e.name.toString() == provinsi).id;
+    var databaru = datakabupaten!
+        .where((ite) => ite.id.toString().contains(item.toString()))
+        .toList();
+
+    var data = databaru.map((e) => e.name.toString()).toList();
+    itemkabupaten = data;
+    return itemkabupaten;
+  }
+
+  Future<List<String>> getprovinsilist({String provinsi = '11'}) async {
+    List<String> itemprovinsi;
+    var dataprovinsi = await getdataprovinsi();
+    var data = dataprovinsi!.map((e) => e.name.toString()).toList();
+    itemprovinsi = data;
+    // var datagr = datagruprelawan.map((e) => e.nama_grup.toString()).toList();
+    // itemgruprelawan = datagr;
+    return itemprovinsi;
+  }
+
+  Future<List<String>> getkecamatanlist({String provinsi = '11'}) async {
+    List<String> itemkecamatan;
+    var datakabupaten = await getdatakabupaten();
+    var datakecamatan = await getdatakecamatan();
+    var item =
+        datakabupaten!.firstWhere((e) => e.name.toString() == provinsi).id;
+    var databaru = datakecamatan!
+        .where((ite) => ite.id.toString().contains(item.toString()))
+        .toList();
+
+    var data = databaru.map((e) => e.name.toString()).toList();
+    itemkecamatan = data;
+    return itemkecamatan;
+  }
+
+  // Future<List<String>> getprovinsilisttps({String provinsi = '11'}) async {
+  //   List<String> itemprovinsitpslist;
+  //   List<Datatps>? datatps = [];
+  //   datatps = await getdatatps();
+  //   var dataprovinsi = await getdataprovinsi();
+  //   var item = datatps!.map((e) => e.Province_id.toString()).toList();
+  // }
 }

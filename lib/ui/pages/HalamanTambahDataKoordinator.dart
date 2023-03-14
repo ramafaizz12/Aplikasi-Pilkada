@@ -33,13 +33,6 @@ class _HalamanTambahDataKoordinatorState
     });
   }
 
-  // Future pickktp() async {
-  //   final myfile = await ImagePicker().pickImage(source: ImageSource.camera);
-  //   setState(() {
-  //     _scanktp = File(myfile!.path);
-  //   });
-  // }
-
   _tambahdata() {
     context.read<DatakoordinatorBloc>().add(TambahDataKoordinator(
         nama: namakoorcontrol.text,
@@ -150,14 +143,6 @@ class _HalamanTambahDataKoordinatorState
                     child: TextField(
                       keyboardType: TextInputType.name,
                       controller: namakoorcontrol,
-                      onTap: () {
-                        setState(() {
-                          var data = dataprovinsi
-                              .map((e) => e!.name.toString())
-                              .toList();
-                          itemprovinsi = data;
-                        });
-                      },
                       maxLines: 1,
                       style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                       decoration: const InputDecoration(
@@ -305,32 +290,6 @@ class _HalamanTambahDataKoordinatorState
                       )
                     ],
                   ),
-                  // ContainerInput(
-                  //   lebarfont: p1.maxHeight * 0.02,
-                  //   width: p1.maxWidth * 0.45,
-                  //   height: p1.maxHeight * 0.05,
-                  //   nama: 'Tanggal Lahir',
-                  //   ontapfield: () async {
-                  //     DateTime? pickedDate = await showDatePicker(
-                  //         context: context,
-                  //         initialDate: DateTime.now(),
-                  //         firstDate: DateTime(2000),
-                  //         lastDate: DateTime(2101));
-                  //     if (pickedDate != null) {
-                  //       print(pickedDate);
-                  //       String formattedDate =
-                  //           DateFormat('yyyy-MM-dd').format(pickedDate);
-                  //       print(formattedDate);
-                  //       setState(() {
-                  //         tanggalahircontrol.text = formattedDate;
-                  //       });
-                  //     } else {
-                  //       print("Date is not selected");
-                  //     }
-                  //   },
-                  //   tipekeyboard: TextInputType.datetime,
-                  //   control: tanggalahircontrol,
-                  // ),
                 ],
               ),
               Column(
@@ -396,23 +355,10 @@ class _HalamanTambahDataKoordinatorState
                     onChanged: (value) {
                       setState(() {
                         selectedprovinsi = value;
-                        setState(() {
-                          var item = dataprovinsi
-                              .firstWhere((e) =>
-                                  e!.name.toString() == selectedprovinsi)!
-                              .id;
-                          var databaru = datakabupaten
-                              .where((ite) =>
-                                  ite!.id.toString().contains(item.toString()))
-                              .toList();
-                          datakabupaten = databaru;
-                          var data =
-                              databaru.map((e) => e!.name.toString()).toList();
-                          itemkabupaten = data;
-                        });
                       });
                     },
-                    items: itemprovinsi,
+                    asyncItems: (String? filter) => auth.getprovinsilist(
+                        provinsi: selectedprovinsi.toString()),
                     dropdownDecoratorProps: DropDownDecoratorProps(
                         baseStyle:
                             textpoppin.copyWith(fontWeight: FontWeight.w600),
@@ -438,7 +384,8 @@ class _HalamanTambahDataKoordinatorState
                         selectedkota = value;
                       });
                     },
-                    items: itemkabupaten,
+                    asyncItems: (String? filter) => auth.getkabupatenlist(
+                        provinsi: selectedprovinsi.toString()),
                     dropdownDecoratorProps: DropDownDecoratorProps(
                         baseStyle:
                             textpoppin.copyWith(fontWeight: FontWeight.w600),
@@ -554,6 +501,7 @@ class _HalamanTambahDataKoordinatorState
                       child: TextButton(
                           onPressed: () {
                             _tambahdata();
+                            setState(() {});
                           },
                           child: Text(
                             "Simpan",

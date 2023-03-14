@@ -292,23 +292,10 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                     onChanged: (value) {
                       setState(() {
                         selectedprovinsi = value;
-                        setState(() {
-                          var item = dataprovinsi
-                              .firstWhere((e) =>
-                                  e!.name.toString() == selectedprovinsi)!
-                              .id;
-                          var databaru = datakabupaten
-                              .where((ite) =>
-                                  ite!.id.toString().contains(item.toString()))
-                              .toList();
-                          datakabupaten = databaru;
-                          var data =
-                              databaru.map((e) => e!.name.toString()).toList();
-                          itemkabupaten = data;
-                        });
                       });
                     },
-                    items: itemprovinsi,
+                    asyncItems: (String? filter) => auth.getprovinsilist(
+                        provinsi: selectedprovinsi.toString()),
                     dropdownDecoratorProps: DropDownDecoratorProps(
                         baseStyle:
                             textpoppin.copyWith(fontWeight: FontWeight.w600),
@@ -332,24 +319,10 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                     onChanged: (value) {
                       setState(() {
                         selectedkota = value;
-                        var item = datakabupaten
-                            .firstWhere(
-                                (e) => e!.name.toString() == selectedkota)!
-                            .id;
-                        var databaru = datakecamatan
-                            .where((ite) =>
-                                ite!.id.toString().contains(item.toString()))
-                            .toList();
-                        datakecamatan = databaru;
-                        var data =
-                            databaru.map((e) => e!.name.toString()).toList();
-                        itemkecamatan = data;
-                      });
-                      setState(() {
-                        selectedkota = value;
                       });
                     },
-                    items: itemkabupaten,
+                    asyncItems: (String? filter) => auth.getkabupatenlist(
+                        provinsi: selectedprovinsi.toString()),
                     dropdownDecoratorProps: DropDownDecoratorProps(
                         baseStyle:
                             textpoppin.copyWith(fontWeight: FontWeight.w600),
@@ -375,7 +348,8 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
                         selectedkecamatan = value;
                       });
                     },
-                    items: itemkecamatan,
+                    asyncItems: (String? filter) => auth.getkecamatanlist(
+                        provinsi: selectedkota.toString()),
                     dropdownDecoratorProps: DropDownDecoratorProps(
                         baseStyle:
                             textpoppin.copyWith(fontWeight: FontWeight.w600),

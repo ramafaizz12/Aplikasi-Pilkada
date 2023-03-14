@@ -10,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int endTime = DateTime.fromMillisecondsSinceEpoch(1706580507 * 1000)
+      .millisecondsSinceEpoch;
   @override
   Widget build(BuildContext context) {
     context.read<AuthBloc>();
@@ -45,6 +47,40 @@ class _HomePageState extends State<HomePage> {
               child: HalamanHome(
                 haldata: widget.haldata,
                 dashboard: widget.dashboard,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: p1.maxHeight * 0.87,
+                  left: p1.maxWidth * 0.03,
+                  right: p1.maxWidth * 0.03),
+              child: CountdownTimer(
+                endTime: endTime,
+                widgetBuilder: (context, time) {
+                  if (time == null) {
+                    return Text('Game over');
+                  }
+                  return Container(
+                      width: p1.maxWidth,
+                      height: p1.maxHeight * 0.08,
+                      decoration: BoxDecoration(
+                          color: putih,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Hitung Mundur Pemilu 2024",
+                            style: textpoppin,
+                          ),
+                          Text(
+                            '${time.days} Hari ${time.hours} Jam ${time.min} Menit ${time.sec} Detik',
+                            style: textpoppin.copyWith(
+                                fontWeight: FontWeight.w700),
+                          )
+                        ],
+                      ));
+                },
               ),
             ),
             // Align(

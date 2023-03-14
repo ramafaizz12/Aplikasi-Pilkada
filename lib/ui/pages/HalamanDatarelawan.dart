@@ -46,7 +46,6 @@ class _HalamanDataRelawanState extends State<HalamanDataRelawan> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<DatarelawanBloc>().add(DataRelawanConnect());
     return LayoutBuilder(
       builder: (p0, p1) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +127,7 @@ class _HalamanDataRelawanState extends State<HalamanDataRelawan> {
           ),
           SizedBox(
             width: p1.maxWidth,
-            height: p1.maxHeight * 0.85,
+            height: p1.maxHeight * 0.75,
             child: _foundUsers.isNotEmpty
                 ? GridView.builder(
                     scrollDirection: Axis.vertical,
@@ -232,6 +231,59 @@ class _HalamanDataRelawanState extends State<HalamanDataRelawan> {
                     "Data Not Connected",
                     style: textpoppin,
                   ),
+          ),
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(top: p1.maxHeight * 0.02),
+              width: p1.maxWidth * 0.7,
+              height: p1.maxHeight * 0.06,
+              decoration: BoxDecoration(
+                  color: putihh, borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<DatarelawanBloc>()
+                          .add(DataRelawanConnect(page: '1'));
+                    },
+                    child: Text("1"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<DatarelawanBloc>()
+                          .add(DataRelawanConnect(page: '2'));
+                    },
+                    child: Text("2"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<DatarelawanBloc>()
+                          .add(DataRelawanConnect(page: '3'));
+                    },
+                    child: Text("3"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<DatarelawanBloc>()
+                          .add(DataRelawanConnect(page: '4'));
+                    },
+                    child: Text("4"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context
+                          .read<DatarelawanBloc>()
+                          .add(DataRelawanConnect(page: '4'));
+                    },
+                    child: Text(">"),
+                  ),
+                ],
+              ),
+            ),
           )
         ],
       ),

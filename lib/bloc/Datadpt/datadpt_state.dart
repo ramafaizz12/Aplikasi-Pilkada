@@ -7,6 +7,10 @@ class DatadptInitial extends DatadptState {}
 
 class DatadptLoaded extends DatadptState {
   List<Datadpt>? data;
+  List<String>? dataprovinsi;
+  List<String>? datakabupaten;
+  List<String>? datakecamatan;
 
-  DatadptLoaded({this.data});
+  DatadptLoaded(
+      {this.data, this.dataprovinsi, this.datakabupaten, this.datakecamatan});
 }

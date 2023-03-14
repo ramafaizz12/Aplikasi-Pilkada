@@ -13,16 +13,15 @@ class HalamanDataSaksitps extends StatefulWidget {
 }
 
 class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
-  List<String> founduser = [];
-
+  int page = 4 + 1;
   @override
   initState() {
+    context.read<DatasaksiBloc>().add(DatasaksiConnect(page: '1'));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<DatasaksiBloc>().add(DatasaksiConnect());
     return LayoutBuilder(
       builder: (p0, p1) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +73,11 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                     color: putih),
                 child: TextField(
                   style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
-                  decoration: const InputDecoration(border: InputBorder.none),
+                  decoration: const InputDecoration(
+                      hintText: 'Masukkan Nama Saksi',
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.only(top: 5, left: 5)),
                 ),
               ),
               Container(
@@ -99,119 +102,182 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
           ),
           SizedBox(
             width: p1.maxWidth,
-            height: p1.maxHeight * 0.85,
+            height: p1.maxHeight * 0.75,
             child: BlocBuilder<DatasaksiBloc, DatasaksiState>(
               builder: (context, state) {
                 return state is DataSaksiLoaded
-                    ? GridView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.data!.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (1 / .4),
-                            crossAxisCount: 1,
-                            mainAxisSpacing: p1.maxHeight * 0.02,
-                            crossAxisSpacing: 5),
-                        itemBuilder: (context, index) =>
-                            FutureBuilder<SemuaDaerah>(
-                          future: auth.getprovkabupatenkecamatan(
-                              kabupaten:
-                                  state.data![index].regency_id.toString(),
-                              kecamatan:
-                                  state.data![index].district_id.toString()),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              HalamanTemplateData(
-                                                  haldata: HalamanDetailSaksi(
-                                                namasaksi: state
-                                                    .data![index].nama_saksi
-                                                    .toString(),
-                                                alamat: state
-                                                    .data![index].alamat
-                                                    .toString(),
-                                                email: state.data![index].email
-                                                    .toString(),
-                                                notelepon: state
-                                                    .data![index].no_hp
-                                                    .toString(),
-                                                kabupaten:
-                                                    snapshot.data!.kabupaten,
-                                                kecamatan:
-                                                    snapshot.data!.kecamatan,
-                                                gambar: state.data![index].saksi
-                                                    .toString(),
-                                                tps: state.data![index].tps_id
-                                                    .toString(),
-                                              ))));
-                                },
-                                child: Container(
-                                  width: p1.maxWidth,
-                                  height: p1.maxHeight * 0.2,
-                                  decoration: BoxDecoration(
-                                      color: abuabu,
-                                      borderRadius: BorderRadius.circular(12)),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: p1.maxHeight * 0.02),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 48,
-                                          backgroundImage: NetworkImage(
-                                              'https://web-sisfopilkada.taekwondosulsel.info/public/storage/${state.data![index].saksi}'),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Nama\nTPS',
-                                              textAlign: TextAlign.center,
-                                              style: textpoppin.copyWith(
-                                                  fontSize:
-                                                      p1.maxHeight * 0.02),
-                                              overflow: TextOverflow.ellipsis,
-                                            )
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              '${state.data![index].nama_saksi}\n${state.data![index].tps_id}',
-                                              textAlign: TextAlign.start,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: textpoppin.copyWith(
-                                                  fontSize: p1.maxHeight * 0.02,
-                                                  fontWeight: FontWeight.w600),
-                                            )
-                                          ],
-                                        )
-                                      ],
+                    ? state.data!.isNotEmpty
+                        ? GridView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: state.data!.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: (1 / .4),
+                                    crossAxisCount: 1,
+                                    mainAxisSpacing: p1.maxHeight * 0.02,
+                                    crossAxisSpacing: 5),
+                            itemBuilder: (context, index) => InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                HalamanTemplateData(
+                                                    haldata: HalamanDetailSaksi(
+                                                  namasaksi: state
+                                                      .data![index].nama_saksi
+                                                      .toString(),
+                                                  alamat: state
+                                                      .data![index].alamat
+                                                      .toString(),
+                                                  email: state
+                                                      .data![index].email
+                                                      .toString(),
+                                                  notelepon: state
+                                                      .data![index].no_hp
+                                                      .toString(),
+                                                  kabupaten:
+                                                      state.kabupaten![index],
+                                                  kecamatan:
+                                                      state.kecamatan![index],
+                                                  gambar: state
+                                                      .data![index].saksi
+                                                      .toString(),
+                                                  tps: state.data![index].tps_id
+                                                      .toString(),
+                                                ))));
+                                  },
+                                  child: Container(
+                                    width: p1.maxWidth,
+                                    height: p1.maxHeight * 0.2,
+                                    decoration: BoxDecoration(
+                                        color: abuabu,
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          top: p1.maxHeight * 0.02),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 48,
+                                            backgroundImage: NetworkImage(
+                                                'https://web-sisfopilkada.taekwondosulsel.info/public/storage/${state.data![index].saksi}'),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Nama\nTPS',
+                                                textAlign: TextAlign.center,
+                                                style: textpoppin.copyWith(
+                                                    fontSize:
+                                                        p1.maxHeight * 0.02),
+                                                overflow: TextOverflow.ellipsis,
+                                              )
+                                            ],
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '${state.data![index].nama_saksi}\n${state.data![index].tps_id}',
+                                                textAlign: TextAlign.start,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: textpoppin.copyWith(
+                                                    fontSize:
+                                                        p1.maxHeight * 0.02,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            }
-                            return SpinKitDualRing(
-                              color: colororange,
-                            );
-                          },
-                        ),
-                      )
-                    : Text(
-                        "Data Not Connected",
-                        style: textpoppin,
+                                ))
+                        : Text(
+                            'Data Tidak Ditemukan',
+                            style: textpoppin.copyWith(
+                                fontSize: p1.maxHeight * 0.02),
+                          )
+                    : SpinKitDualRing(
+                        color: colororange,
                       );
               },
+            ),
+          ),
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(top: p1.maxHeight * 0.02),
+              width: p1.maxWidth * 0.7,
+              height: p1.maxHeight * 0.06,
+              decoration: BoxDecoration(
+                  color: putihh, borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        context
+                            .read<DatasaksiBloc>()
+                            .add(DatasaksiConnect(page: '1'));
+                      },
+                      child: Text("1"),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        context
+                            .read<DatasaksiBloc>()
+                            .add(DatasaksiConnect(page: '2'));
+                      },
+                      child: Text("2"),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        context
+                            .read<DatasaksiBloc>()
+                            .add(DatasaksiConnect(page: '3'));
+                      },
+                      child: Text("3"),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        context
+                            .read<DatasaksiBloc>()
+                            .add(DatasaksiConnect(page: '4'));
+                      },
+                      child: Text("4"),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        context
+                            .read<DatasaksiBloc>()
+                            .add(DatasaksiConnect(page: page.toString()));
+                      },
+                      child: Text(">"),
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         ],

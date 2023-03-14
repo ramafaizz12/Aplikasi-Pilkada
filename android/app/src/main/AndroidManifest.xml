@@ -2,7 +2,7 @@
     package="com.example.pilkada">
      <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="pilkada"
+        android:label="Pilkada"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

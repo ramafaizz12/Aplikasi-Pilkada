@@ -6,39 +6,25 @@ class HalamanJumlahdpt extends StatefulWidget {
 }
 
 class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
-  List<Datadpt> _allUsers = [];
-
-  List<Datadpt> _foundUsers = [];
+  Authentication auth = Authentication();
+  List<DataProvinsi?> dataprovinsi = [];
+  List<DataKabupaten?> datakabupaten = [];
+  List<DataKecamatan?> datakecamatan = [];
+  String? selectedkota;
+  String? selectedprovinsi;
+  String? selectedkecamatan;
 
   @override
   initState() {
+    auth.getdatakabupaten().then((value) => datakabupaten = value!);
+    auth.getdataprovinsi().then((value) => dataprovinsi = value!);
+    auth.getdatakecamatan().then((value) => datakecamatan = value!);
+    context.read<DatadptBloc>().add(Datadptconnect());
     super.initState();
-  }
-
-  void _runFilter(String enteredKeyword) {
-    List<Datadpt> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = _allUsers;
-    } else {
-      results = _allUsers
-          .where((user) =>
-              user.nama!.toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-    }
-    setState(() {
-      _foundUsers = results;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<DatadptBloc>().add(Datadptconnect());
-    var data = context.read<DatadptBloc>().state;
-    if (data is DatadptLoaded) {
-      _allUsers = data.data!;
-      _foundUsers = _allUsers;
-    }
-
     return LayoutBuilder(
       builder: (p0, p1) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,6 +36,75 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
           ),
           SizedBox(
             height: p1.maxHeight * 0.02,
+          ),
+          DropdownSearch<String>(
+            selectedItem: selectedprovinsi,
+            asyncItems: (String? filter) =>
+                auth.getprovinsilist(provinsi: selectedprovinsi.toString()),
+            onChanged: (value) {
+              setState(() {
+                selectedprovinsi = value;
+                var baru = dataprovinsi
+                    .firstWhere((e) => e!.name.toString() == selectedprovinsi)!
+                    .id
+                    .toString();
+                context
+                    .read<DatadptBloc>()
+                    .add(DatadptSearchProvinsi(value: baru.toString()));
+              });
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                baseStyle: textpoppin.copyWith(fontWeight: FontWeight.w600),
+                dropdownSearchDecoration: InputDecoration(
+                    hintText: 'Pilih Provinsi',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)))),
+          ),
+          DropdownSearch<String>(
+            selectedItem: selectedkota,
+            asyncItems: (String? filter) =>
+                auth.getkabupatenlist(provinsi: selectedprovinsi.toString()),
+            onChanged: (value) {
+              setState(() {
+                selectedkota = value;
+                var baru = datakabupaten
+                    .firstWhere((e) => e!.name.toString() == selectedkota)!
+                    .id
+                    .toString();
+                context
+                    .read<DatadptBloc>()
+                    .add(DatadptSearchKabupaten(value: baru.toString()));
+              });
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                baseStyle: textpoppin.copyWith(fontWeight: FontWeight.w600),
+                dropdownSearchDecoration: InputDecoration(
+                    hintText: 'Pilih Kabupaten / Kota',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)))),
+          ),
+          DropdownSearch<String>(
+            selectedItem: selectedkecamatan,
+            asyncItems: (String? filter) =>
+                auth.getkecamatanlist(provinsi: selectedkota.toString()),
+            onChanged: (value) {
+              setState(() {
+                selectedkecamatan = value;
+                var baru = dataprovinsi
+                    .firstWhere((e) => e!.name.toString() == selectedkecamatan)!
+                    .id
+                    .toString();
+                context
+                    .read<DatadptBloc>()
+                    .add(DatadptSearchKecamatan(value: baru.toString()));
+              });
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                baseStyle: textpoppin.copyWith(fontWeight: FontWeight.w600),
+                dropdownSearchDecoration: InputDecoration(
+                    hintText: 'Pilih Kecamatan',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)))),
           ),
           SizedBox(
             height: p1.maxHeight * 0.02,
@@ -65,7 +120,9 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
                     borderRadius: BorderRadius.circular(15),
                     color: putih),
                 child: TextField(
-                  onChanged: (value) => _runFilter(value),
+                  onChanged: (value) => context
+                      .read<DatadptBloc>()
+                      .add(DatadptSearchnama(value: value)),
                   style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                   decoration: const InputDecoration(
                       hintText: 'Masukkan Nama DPT',
@@ -93,74 +150,112 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
           ),
           SizedBox(
               width: p1.maxWidth,
-              height: p1.maxHeight * 0.7,
-              child: _foundUsers.isNotEmpty
-                  ? GridView.builder(
-                      itemCount: _foundUsers.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: (1 / .9),
-                          crossAxisCount: 1,
-                          mainAxisSpacing: p1.maxHeight * 0.02,
-                          crossAxisSpacing: 5),
-                      itemBuilder: (context, index) =>
-                          FutureBuilder<SemuaDaerah>(
-                        future: auth.getprovkabupatenkecamatan(
-                            kabupaten:
-                                _foundUsers[index].regency_id.toString()),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Container(
-                              width: p1.maxWidth,
-                              height: p1.maxHeight * 0.2,
-                              margin: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  color: abuabu,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: NetworkImage(
-                                        'https://web-sisfopilkada.taekwondosulsel.info/public/storage/${_foundUsers[index].foto}'),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Nama DPT\nKabupaten/Kota",
-                                        style: textpoppin.copyWith(
-                                            fontSize: p1.maxHeight * 0.02),
-                                      ),
-                                      Flexible(
-                                        flex: 1,
-                                        child: Text(
-                                          "${_foundUsers[index].nama}\n${snapshot.data!.kabupaten}",
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: textpoppin.copyWith(
-                                              fontSize: p1.maxHeight * 0.02,
-                                              fontWeight: FontWeight.w600),
+              height: p1.maxHeight * 0.55,
+              child: BlocBuilder<DatadptBloc, DatadptState>(
+                  builder: (context, state) {
+                return state is DatadptLoaded
+                    ? state.data!.isNotEmpty
+                        ? GridView.builder(
+                            itemCount: state.data!.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: (1 / .9),
+                                    crossAxisCount: 1,
+                                    mainAxisSpacing: p1.maxHeight * 0.02,
+                                    crossAxisSpacing: 5),
+                            itemBuilder: (context, index) => InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                HalamanTemplateData(
+                                                  haldata: HalamanDetailDPT(
+                                                    provinsi: state
+                                                        .dataprovinsi![index],
+                                                    nohp: state
+                                                        .data![index].no_hp
+                                                        .toString(),
+                                                    nik: state.data![index].nik
+                                                        .toString(),
+                                                    tempatlahir: state
+                                                        .data![index]
+                                                        .tempat_lahir
+                                                        .toString(),
+                                                    tanggallahir: state
+                                                        .data![index]
+                                                        .tanggal_lahir
+                                                        .toString(),
+                                                    kecamatan: state
+                                                        .datakecamatan![index],
+                                                    jkl: state.data![index].jkl
+                                                        .toString(),
+                                                    email: state
+                                                        .data![index].email
+                                                        .toString(),
+                                                    agama: state
+                                                        .data![index].agama
+                                                        .toString(),
+                                                    namadpt: state
+                                                        .data![index].nama
+                                                        .toString(),
+                                                    kabupaten: state
+                                                        .datakabupaten![index],
+                                                    gambar: state
+                                                        .data![index].foto
+                                                        .toString(),
+                                                  ),
+                                                )));
+                                  },
+                                  child: Container(
+                                    width: p1.maxWidth,
+                                    height: p1.maxHeight * 0.2,
+                                    margin: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: abuabu,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage: NetworkImage(
+                                              'https://web-sisfopilkada.taekwondosulsel.info/public/storage/${state.data![index].foto}'),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            );
-                          }
-                          return SpinKitDualRing(
-                            color: colororange,
-                          );
-                        },
-                      ),
-                    )
-                  : Center(
-                      child: Text(
-                        "No Result Found",
-                        style: textpoppin,
-                      ),
-                    ))
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Nama DPT\nKabupaten/Kota\nProvinsi\nKecamatan",
+                                              style: textpoppin.copyWith(
+                                                  fontSize:
+                                                      p1.maxHeight * 0.02),
+                                            ),
+                                            Flexible(
+                                              flex: 1,
+                                              child: Text(
+                                                "${state.data![index].nama}\n${state.datakabupaten![index]}\n${state.dataprovinsi![index]}\n${state.datakecamatan![index]}",
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: textpoppin.copyWith(
+                                                    fontSize:
+                                                        p1.maxHeight * 0.02,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ))
+                        : Text("")
+                    : Text("");
+              }))
         ],
       ),
     );

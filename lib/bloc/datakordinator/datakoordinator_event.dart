@@ -3,7 +3,11 @@ part of 'datakoordinator_bloc.dart';
 @immutable
 abstract class DatakoordinatorEvent {}
 
-class DataKoordinatorConnect extends DatakoordinatorEvent {}
+class DataKoordinatorConnect extends DatakoordinatorEvent {
+  String page;
+
+  DataKoordinatorConnect({this.page = ''});
+}
 
 class TambahDataKoordinator extends DatakoordinatorEvent {
   String? nama;

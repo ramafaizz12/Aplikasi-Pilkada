@@ -15,8 +15,26 @@ class DatakoordinatorBloc
     auth = Authentication();
     on<DatakoordinatorEvent>((event, emit) async {
       if (event is DataKoordinatorConnect) {
-        var data = await auth!.getdatakordinator();
-        emit(DataKoordinatorLoaded(data: data));
+        var dataprovinsi = await auth!.getdataprovinsi();
+        var datakabupaten = await auth.getdatakabupaten();
+        var data = await auth.getdatakordinator(page: event.page);
+
+        var listkabupaten = [
+          for (var x in data!)
+            datakabupaten!
+                .firstWhere((e) => e.id.toString() == x.regency_id.toString())
+                .name
+                .toString()
+        ];
+        var listprovinsi = [
+          for (var x in data)
+            dataprovinsi!
+                .firstWhere((e) => e.id.toString() == x.Province_id.toString())
+                .name
+                .toString()
+        ];
+        emit(DataKoordinatorLoaded(
+            data: data, provinsi: listprovinsi, kabupaten: listkabupaten));
       }
       if (event is TambahDataKoordinator) {
         var data = await auth!.createkoordinator(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
@@ -24,6 +25,7 @@ import 'package:quickalert/quickalert.dart';
 
 import '../../bloc/DataDashboard/datadashboard_bloc.dart';
 import '../../bloc/DataRelawan/datarelawan_bloc.dart';
+import '../../bloc/DataRelawan/datarelawan_bloc.dart';
 import '../../bloc/Datadpt/datadpt_bloc.dart';
 import '../../bloc/Datakandidat/datakandidat_bloc.dart';
 import '../../bloc/Dataprofile/dataprofile_bloc.dart';
@@ -37,10 +39,12 @@ import '../../models/Datadpt.dart';
 import '../../models/Kecamatan.dart';
 import '../../models/Provinsi.dart';
 import '../../models/Tps.dart';
+import '../../models/dataaksesoris.dart';
 import '../../models/datadaerah.dart';
 import '../../models/datagruprelawan.dart';
 import '../../models/datakandidat.dart';
 import '../../models/datarelawan.dart';
+import '../../models/saksitps.dart';
 import '../../services/AuthService.dart';
 part 'HalamanLoading.dart';
 part 'loadingpage.dart';
@@ -61,7 +65,7 @@ part 'HalamanMenu/HalamanDataAdmin.dart';
 part 'Dashboard/DashboardSaksi.dart';
 part 'HalamanTambahDataRelawan.dart';
 part 'HalamanProfile.dart';
-
+part 'DetailDpt.dart';
 part 'Dashboard/DashboardAdmin.dart';
 part 'Dashboard/DashboardCalek.dart';
 part 'DetailRelawan.dart';
@@ -78,7 +82,7 @@ part 'HalamanTambahDataTps.dart';
 part 'HalamanDataTps.dart';
 part 'HalamanPerolehanSuara.dart';
 part 'NikValidator.dart';
-part 'HomePagebaru.dart';
+part 'HalamanDatarelawancoba.dart';
 part 'HalamanJumlahdpt.dart';
 part 'DetailSaksi.dart';
 part 'DetailKoordinator.dart';

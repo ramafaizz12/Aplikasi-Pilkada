@@ -20,115 +20,39 @@ class HalamanDataTps extends StatefulWidget {
 
 class _HalamanDataTpsState extends State<HalamanDataTps> {
   Authentication auth = Authentication();
-  List<Datatps> _allUsers = [];
+
   List<DataProvinsi?> dataprovinsi = [];
   List<DataKabupaten?> datakabupaten = [];
-  List<Datatps> _foundUsers = [];
+  List<DataKecamatan?> datakecamatan = [];
+
   List<String> kota = [];
   List<String> itemtps = [];
-  List<String> itemprovinsi = [
-    'SULAWESI SELATAN',
-    'ACEH',
-    'SUMATERA UTARA',
-    'SUMATERA BARAT',
-    'RIAU'
-  ];
-  List<String> itemkabupaten = [
-    'KOTA MAKASSAR',
-    'KABUPATEN BULUKUMBA',
-    'KABUPATEN SOPPENG',
-    'KABUPATEN NIAS',
-    'KABUPATEN LANGKAT'
-  ];
+  int page = 4 + 1;
+
   String? selectedprovinsi;
   String? selectedtps;
+  String? selectedkecamatan;
   String? selectedkota;
   @override
   void initState() {
     auth.getdatakabupaten().then((value) => datakabupaten = value!);
     auth.getdataprovinsi().then((value) => dataprovinsi = value!);
-    // var dataprov = dataprovinsi.map((e) => e!.name.toString()).toList();
-    // itemprovinsi = dataprov;
-    var data = context.read<DatatpsBloc>().state;
-    if (data is DatatpsLoaded) {
-      _allUsers = data.data!;
-      _foundUsers = _allUsers;
-    }
+    auth.getdatakecamatan().then((value) => datakecamatan = value!);
+    context.read<DatatpsBloc>().add(Datatpsconnect(page: '1'));
     super.initState();
-  }
-
-  void _runFilterprovinsi(String enteredKeyword) {
-    List<Datatps> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = _allUsers;
-    } else {
-      results = _allUsers
-          .where((user) => user.Province_id!.contains(enteredKeyword))
-          .toList();
-    }
-    setState(() {
-      _foundUsers = results;
-    });
-  }
-
-  void _runFilterkabupaten(String enteredKeyword) {
-    List<Datatps> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = _allUsers;
-    } else {
-      results = _allUsers
-          .where((user) => user.regency_id!.contains(enteredKeyword))
-          .toList();
-    }
-    setState(() {
-      _foundUsers = results;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<DatatpsBloc>().add(Datatpsconnect());
     return LayoutBuilder(
       builder: (p0, p1) => SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Text(
-            //       'Data TPS',
-            //       textAlign: TextAlign.start,
-            //       style: textpoppin.copyWith(fontWeight: FontWeight.w600),
-            //     ),
-            //     // Container(
-            //     //   width: p1.maxWidth * 0.25,
-            //     //   height: p1.maxHeight * 0.05,
-            //     //   decoration: BoxDecoration(
-            //     //       color: colorbiru, borderRadius: BorderRadius.circular(12)),
-            //     //   child: TextButton(
-            //     //       onPressed: () {
-            //     //         Navigator.push(
-            //     //             context,
-            //     //             MaterialPageRoute(
-            //     //                 builder: (context) => HalamanTemplateData(
-            //     //                       haldata: HalamanTambahDataTps(),
-            //     //                     )));
-            //     //       },
-            //     //       child: Text(
-            //     //         "Tambah",
-            //     //         style: textpoppin.copyWith(
-            //     //             fontSize: p1.maxHeight * 0.02,
-            //     //             color: putih,
-            //     //             fontWeight: FontWeight.w600),
-            //     //       )),
-            //     // )
-            //   ],
-            // ),
-
             DropdownSearch<String>(
               selectedItem: selectedtps,
-              items: itemprovinsi,
+              asyncItems: (String? filter) =>
+                  auth.getprovinsilist(provinsi: selectedprovinsi.toString()),
               onChanged: (value) {
                 setState(() {
                   selectedtps = value;
@@ -136,7 +60,9 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                       .firstWhere((e) => e!.name.toString() == selectedtps)!
                       .id
                       .toString();
-                  _runFilterprovinsi(baru.toString());
+                  context
+                      .read<DatatpsBloc>()
+                      .add(DatatpsSearchProvinsi(provinsi: baru.toString()));
                 });
               },
               dropdownDecoratorProps: DropDownDecoratorProps(
@@ -154,10 +80,17 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
               onChanged: (value) {
                 setState(() {
                   selectedkota = value;
-                  _runFilterkabupaten(selectedkota.toString());
+                  var baru = datakabupaten
+                      .firstWhere((e) => e!.name.toString() == selectedkota)!
+                      .id
+                      .toString();
+                  context
+                      .read<DatatpsBloc>()
+                      .add(DatatpsSearchKabupaten(kabupaten: baru.toString()));
                 });
               },
-              items: itemkabupaten,
+              asyncItems: (String? filter) =>
+                  auth.getkabupatenlist(provinsi: selectedtps.toString()),
               dropdownDecoratorProps: DropDownDecoratorProps(
                   baseStyle: textpoppin.copyWith(fontWeight: FontWeight.w600),
                   dropdownSearchDecoration: InputDecoration(
@@ -165,94 +98,117 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10)))),
             ),
-
             SizedBox(
-                width: p1.maxWidth,
-                height: p1.maxHeight * 0.85,
-                child: _foundUsers.isNotEmpty
-                    ? GridView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: _foundUsers.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (1 / .5),
-                            crossAxisCount: 1,
-                            mainAxisSpacing: p1.maxHeight * 0.02,
-                            crossAxisSpacing: 5),
-                        itemBuilder: (context, index) => Container(
-                          width: p1.maxWidth,
-                          height: p1.maxHeight * 0.2,
-                          decoration: BoxDecoration(
-                              color: abuabu,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Padding(
-                            padding: EdgeInsets.only(top: p1.maxHeight * 0.02),
-                            child: SingleChildScrollView(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'TPS',
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.fade,
-                                        style: textpoppin.copyWith(
-                                            fontSize: p1.maxHeight * 0.02),
-                                      ),
-                                      Text(
-                                        'Provinsi',
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.fade,
-                                        style: textpoppin.copyWith(
-                                            fontSize: p1.maxHeight * 0.02),
-                                      ),
-                                      Text(
-                                        'Kabupaten/Kota',
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.fade,
-                                        style: textpoppin.copyWith(
-                                            fontSize: p1.maxHeight * 0.02),
-                                      ),
-                                      Text(
-                                        'Kecamatan',
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.fade,
-                                        style: textpoppin.copyWith(
-                                            fontSize: p1.maxHeight * 0.02),
-                                      ),
-                                      Text(
-                                        'Keterangan',
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.fade,
-                                        style: textpoppin.copyWith(
-                                            fontSize: p1.maxHeight * 0.02),
-                                      ),
-                                    ],
-                                  ),
-                                  FutureBuilder<SemuaDaerah>(
-                                    future: auth.getprovkabupatenkecamatan(
-                                        provinsi: _foundUsers[index]
-                                            .Province_id
-                                            .toString(),
-                                        kecamatan: _foundUsers[index]
-                                            .district_id
-                                            .toString(),
-                                        kabupaten: _foundUsers[index]
-                                            .regency_id
-                                            .toString()),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Flexible(
+              height: p1.maxHeight * 0.02,
+            ),
+            DropdownSearch<String>(
+              selectedItem: selectedkecamatan,
+              onChanged: (value) {
+                setState(() {
+                  selectedkecamatan = value;
+                  var baru = datakecamatan
+                      .firstWhere(
+                          (e) => e!.name.toString() == selectedkecamatan)!
+                      .id
+                      .toString();
+                  context
+                      .read<DatatpsBloc>()
+                      .add(DatatpsSearchKecamatan(kecamatan: baru.toString()));
+                });
+              },
+              asyncItems: (String? filter) =>
+                  auth.getkecamatanlist(provinsi: selectedkota.toString()),
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                  baseStyle: textpoppin.copyWith(fontWeight: FontWeight.w600),
+                  dropdownSearchDecoration: InputDecoration(
+                      hintText: 'Pilih Kecamatan',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)))),
+            ),
+            SizedBox(
+              width: p1.maxWidth,
+              height: p1.maxHeight * 0.55,
+              child: BlocBuilder<DatatpsBloc, DatatpsState>(
+                builder: (context, state) {
+                  return state is DatatpsLoaded
+                      ? state.data!.isNotEmpty
+                          ? GridView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: state.data!.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio: (1 / .5),
+                                      crossAxisCount: 1,
+                                      mainAxisSpacing: p1.maxHeight * 0.02,
+                                      crossAxisSpacing: 5),
+                              itemBuilder: (context, index) => Container(
+                                width: p1.maxWidth,
+                                height: p1.maxHeight * 0.2,
+                                decoration: BoxDecoration(
+                                    color: abuabu,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(top: p1.maxHeight * 0.02),
+                                  child: SingleChildScrollView(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'TPS',
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.fade,
+                                              style: textpoppin.copyWith(
+                                                  fontSize:
+                                                      p1.maxHeight * 0.02),
+                                            ),
+                                            Text(
+                                              'Provinsi',
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.fade,
+                                              style: textpoppin.copyWith(
+                                                  fontSize:
+                                                      p1.maxHeight * 0.02),
+                                            ),
+                                            Text(
+                                              'Kabupaten/Kota',
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.fade,
+                                              style: textpoppin.copyWith(
+                                                  fontSize:
+                                                      p1.maxHeight * 0.02),
+                                            ),
+                                            Text(
+                                              'Kecamatan',
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.fade,
+                                              style: textpoppin.copyWith(
+                                                  fontSize:
+                                                      p1.maxHeight * 0.02),
+                                            ),
+                                            Text(
+                                              'Keterangan',
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.fade,
+                                              style: textpoppin.copyWith(
+                                                  fontSize:
+                                                      p1.maxHeight * 0.02),
+                                            ),
+                                          ],
+                                        ),
+                                        Flexible(
                                           flex: 1,
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                _foundUsers[index]
-                                                    .tps
+                                                state.data![index].tps
                                                     .toString(),
                                                 textAlign: TextAlign.start,
                                                 overflow: TextOverflow.fade,
@@ -263,7 +219,7 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                                                         FontWeight.w600),
                                               ),
                                               Text(
-                                                '${snapshot.data!.provinsi}',
+                                                '${state.provinsi![index]}',
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.fade,
                                                 style: textpoppin.copyWith(
@@ -273,7 +229,7 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                                                         FontWeight.w600),
                                               ),
                                               Text(
-                                                "${snapshot.data!.kabupaten}",
+                                                "${state.kabupaten![index]}",
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.fade,
                                                 style: textpoppin.copyWith(
@@ -283,7 +239,7 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                                                         FontWeight.w600),
                                               ),
                                               Text(
-                                                '${_foundUsers[index].district_id.toString()}',
+                                                '${state.kecamatan![index]}',
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.fade,
                                                 style: textpoppin.copyWith(
@@ -293,9 +249,11 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                                                         FontWeight.w600),
                                               ),
                                               Text(
-                                                _foundUsers[index]
-                                                    .ket
-                                                    .toString(),
+                                                state.data![index].ket
+                                                    .toString()
+                                                    .replaceAll(
+                                                        RegExp("<p>|</p>|<br>"),
+                                                        ""),
                                                 textAlign: TextAlign.center,
                                                 style: textpoppin.copyWith(
                                                     fontSize:
@@ -305,25 +263,94 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                                               ),
                                             ],
                                           ),
-                                        );
-                                      }
-                                      return CircularProgressIndicator(
-                                        color: colororange,
-                                      );
-                                    },
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : Center(
-                        child: Text(
-                          "No Result Found",
-                          style: textpoppin,
-                        ),
-                      ))
+                            )
+                          : Center(
+                              child: Text(
+                                "Data Tidak Ditemukan",
+                                style: textpoppin.copyWith(
+                                    fontSize: p1.maxWidth * 0.04),
+                              ),
+                            )
+                      : SpinKitDualRing(
+                          color: colororange,
+                        );
+                },
+              ),
+            ),
+            Center(
+              child: Container(
+                margin: EdgeInsets.only(top: p1.maxHeight * 0.02),
+                width: p1.maxWidth * 0.7,
+                height: p1.maxHeight * 0.06,
+                decoration: BoxDecoration(
+                    color: putihh, borderRadius: BorderRadius.circular(15)),
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: () {
+                          context
+                              .read<DatatpsBloc>()
+                              .add(Datatpsconnect(page: '1'));
+                        },
+                        child: Text("1"),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: () {
+                          context
+                              .read<DatatpsBloc>()
+                              .add(Datatpsconnect(page: '2'));
+                        },
+                        child: Text("2"),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: () {
+                          context
+                              .read<DatatpsBloc>()
+                              .add(Datatpsconnect(page: '3'));
+                        },
+                        child: Text("3"),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: () {
+                          context
+                              .read<DatatpsBloc>()
+                              .add(Datatpsconnect(page: '4'));
+                        },
+                        child: Text("4"),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: () {
+                          context
+                              .read<DatatpsBloc>()
+                              .add(Datatpsconnect(page: page.toString()));
+                        },
+                        child: Text(">"),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
