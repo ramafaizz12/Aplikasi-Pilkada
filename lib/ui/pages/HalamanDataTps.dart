@@ -288,8 +288,9 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                 margin: EdgeInsets.only(top: p1.maxHeight * 0.02),
                 width: p1.maxWidth * 0.7,
                 height: p1.maxHeight * 0.06,
-                decoration: BoxDecoration(
-                    color: putihh, borderRadius: BorderRadius.circular(15)),
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(color: hitam.withOpacity(0.2), offset: Offset(3, 3))
+                ], color: colorbiru, borderRadius: BorderRadius.circular(15)),
                 child: Row(
                   children: [
                     Flexible(
@@ -300,7 +301,8 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                               .read<DatatpsBloc>()
                               .add(Datatpsconnect(page: '1'));
                         },
-                        child: Text("1"),
+                        child:
+                            Text("1", style: textpoppin.copyWith(color: putih)),
                       ),
                     ),
                     Flexible(
@@ -311,7 +313,8 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                               .read<DatatpsBloc>()
                               .add(Datatpsconnect(page: '2'));
                         },
-                        child: Text("2"),
+                        child:
+                            Text("2", style: textpoppin.copyWith(color: putih)),
                       ),
                     ),
                     Flexible(
@@ -322,7 +325,8 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                               .read<DatatpsBloc>()
                               .add(Datatpsconnect(page: '3'));
                         },
-                        child: Text("3"),
+                        child:
+                            Text("3", style: textpoppin.copyWith(color: putih)),
                       ),
                     ),
                     Flexible(
@@ -333,7 +337,8 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                               .read<DatatpsBloc>()
                               .add(Datatpsconnect(page: '4'));
                         },
-                        child: Text("4"),
+                        child:
+                            Text("4", style: textpoppin.copyWith(color: putih)),
                       ),
                     ),
                     Flexible(
@@ -344,7 +349,8 @@ class _HalamanDataTpsState extends State<HalamanDataTps> {
                               .read<DatatpsBloc>()
                               .add(Datatpsconnect(page: page.toString()));
                         },
-                        child: Text(">"),
+                        child:
+                            Text(">", style: textpoppin.copyWith(color: putih)),
                       ),
                     ),
                   ],

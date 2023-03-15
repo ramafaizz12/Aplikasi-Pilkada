@@ -60,7 +60,7 @@ class _HalamanProfileState extends State<HalamanProfile> {
                         width: p1.maxWidth * 0.3,
                         height: p1.maxHeight * 0.3,
                         child: CircleAvatar(
-                          radius: 70,
+                          radius: 80,
                           backgroundImage: NetworkImage(
                               'https://web-pilkada.taekwondosulsel.info/public/storage/${state.data!.foto}'),
                         ),
@@ -224,58 +224,6 @@ class _HalamanProfileState extends State<HalamanProfile> {
                     SizedBox(
                       height: p1.maxHeight * 0.01,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: p1.maxWidth * 0.39, top: p1.maxHeight * 0.03),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: p1.maxWidth * 0.3,
-                            height: p1.maxHeight * 0.07,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: putih,
-                                border:
-                                    Border.all(color: colorbiru, width: 1.0)),
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  "Batal",
-                                  style: textpoppin.copyWith(
-                                      color: colorbiru,
-                                      fontWeight: FontWeight.w600),
-                                )),
-                          ),
-                          SizedBox(
-                            width: p1.maxWidth * 0.01,
-                          ),
-                          Container(
-                            width: p1.maxWidth * 0.3,
-                            height: p1.maxHeight * 0.07,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: hitam.withOpacity(0.2),
-                                      offset: const Offset(3, 3))
-                                ],
-                                color: colorbiru,
-                                border:
-                                    Border.all(color: colorbiru, width: 1.0)),
-                            child: TextButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Simpan",
-                                  style: textpoppin.copyWith(
-                                      color: putih,
-                                      fontWeight: FontWeight.w600),
-                                )),
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 )
               : Text(

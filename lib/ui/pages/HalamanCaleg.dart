@@ -178,11 +178,8 @@ class _HalamanCalegState extends State<HalamanCaleg> {
                         ),
                       ),
                     )
-                  : Center(
-                      child: Text(
-                        "No Result Found",
-                        style: textpoppin,
-                      ),
+                  : SpinKitDualRing(
+                      color: colororange,
                     ))
         ],
       ),

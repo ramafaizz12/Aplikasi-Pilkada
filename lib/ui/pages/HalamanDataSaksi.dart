@@ -72,6 +72,9 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                     borderRadius: BorderRadius.circular(15),
                     color: putih),
                 child: TextField(
+                  onChanged: (value) => context
+                      .read<DatasaksiBloc>()
+                      .add(DatasaksiSearch(value: value)),
                   style: textpoppin.copyWith(fontSize: p1.maxHeight * 0.02),
                   decoration: const InputDecoration(
                       hintText: 'Masukkan Nama Saksi',
@@ -201,10 +204,12 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                                     ),
                                   ),
                                 ))
-                        : Text(
-                            'Data Tidak Ditemukan',
-                            style: textpoppin.copyWith(
-                                fontSize: p1.maxHeight * 0.02),
+                        : Center(
+                            child: Text(
+                              'Data Tidak Ditemukan',
+                              style: textpoppin.copyWith(
+                                  fontSize: p1.maxHeight * 0.02),
+                            ),
                           )
                     : SpinKitDualRing(
                         color: colororange,
@@ -217,8 +222,9 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
               margin: EdgeInsets.only(top: p1.maxHeight * 0.02),
               width: p1.maxWidth * 0.7,
               height: p1.maxHeight * 0.06,
-              decoration: BoxDecoration(
-                  color: putihh, borderRadius: BorderRadius.circular(15)),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(color: hitam.withOpacity(0.2), offset: Offset(3, 3))
+              ], color: colorbiru, borderRadius: BorderRadius.circular(15)),
               child: Row(
                 children: [
                   Flexible(
@@ -229,7 +235,8 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                             .read<DatasaksiBloc>()
                             .add(DatasaksiConnect(page: '1'));
                       },
-                      child: Text("1"),
+                      child:
+                          Text("1", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -240,7 +247,8 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                             .read<DatasaksiBloc>()
                             .add(DatasaksiConnect(page: '2'));
                       },
-                      child: Text("2"),
+                      child:
+                          Text("2", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -251,7 +259,8 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                             .read<DatasaksiBloc>()
                             .add(DatasaksiConnect(page: '3'));
                       },
-                      child: Text("3"),
+                      child:
+                          Text("3", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -262,7 +271,8 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                             .read<DatasaksiBloc>()
                             .add(DatasaksiConnect(page: '4'));
                       },
-                      child: Text("4"),
+                      child:
+                          Text("4", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -273,7 +283,8 @@ class _HalamanDataSaksitpsState extends State<HalamanDataSaksitps> {
                             .read<DatasaksiBloc>()
                             .add(DatasaksiConnect(page: page.toString()));
                       },
-                      child: Text(">"),
+                      child:
+                          Text(">", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                 ],

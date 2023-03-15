@@ -60,6 +60,7 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)))),
           ),
+          SizedBox(height: p1.maxHeight * 0.02),
           DropdownSearch<String>(
             selectedItem: selectedkota,
             asyncItems: (String? filter) =>
@@ -83,6 +84,7 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)))),
           ),
+          SizedBox(height: p1.maxHeight * 0.02),
           DropdownSearch<String>(
             selectedItem: selectedkecamatan,
             asyncItems: (String? filter) =>
@@ -150,7 +152,7 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
           ),
           SizedBox(
               width: p1.maxWidth,
-              height: p1.maxHeight * 0.55,
+              height: p1.maxHeight * 0.54,
               child: BlocBuilder<DatadptBloc, DatadptState>(
                   builder: (context, state) {
                 return state is DatadptLoaded
@@ -220,10 +222,11 @@ class _HalamanJumlahdptState extends State<HalamanJumlahdpt> {
                                           MainAxisAlignment.center,
                                       children: [
                                         CircleAvatar(
-                                          radius: 50,
+                                          radius: 70,
                                           backgroundImage: NetworkImage(
                                               'https://web-sisfopilkada.taekwondosulsel.info/public/storage/${state.data![index].foto}'),
                                         ),
+                                        SizedBox(height: p1.maxHeight * 0.02),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,

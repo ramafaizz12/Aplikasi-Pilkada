@@ -41,3 +41,9 @@ class TambahDatasaksi extends DatasaksiEvent {
 }
 
 class DatasaksiNew extends DatasaksiEvent {}
+
+class DatasaksiSearch extends DatasaksiEvent {
+  String? value;
+
+  DatasaksiSearch({this.value});
+}

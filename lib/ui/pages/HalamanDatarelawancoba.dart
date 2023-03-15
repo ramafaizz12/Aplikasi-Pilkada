@@ -201,9 +201,11 @@ class _HalamanDatarelawancobaState extends State<HalamanDatarelawancoba> {
                                       ),
                                     ),
                                   ))
-                          : Text("Data Tidak Ditemukan",
-                              style: textpoppin.copyWith(
-                                  fontSize: p1.maxHeight * 0.02))
+                          : Center(
+                              child: Text("Data Tidak Ditemukan",
+                                  style: textpoppin.copyWith(
+                                      fontSize: p1.maxHeight * 0.02)),
+                            )
                       : SpinKitDualRing(
                           color: colororange,
                         );
@@ -214,8 +216,9 @@ class _HalamanDatarelawancobaState extends State<HalamanDatarelawancoba> {
               margin: EdgeInsets.only(top: p1.maxHeight * 0.02),
               width: p1.maxWidth * 0.7,
               height: p1.maxHeight * 0.06,
-              decoration: BoxDecoration(
-                  color: putihh, borderRadius: BorderRadius.circular(15)),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(color: hitam.withOpacity(0.2), offset: Offset(3, 3))
+              ], color: colorbiru, borderRadius: BorderRadius.circular(15)),
               child: Row(
                 children: [
                   Flexible(
@@ -226,7 +229,8 @@ class _HalamanDatarelawancobaState extends State<HalamanDatarelawancoba> {
                             .read<DatarelawanBloc>()
                             .add(DataRelawanConnect(page: '1'));
                       },
-                      child: Text("1"),
+                      child:
+                          Text("1", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -237,7 +241,8 @@ class _HalamanDatarelawancobaState extends State<HalamanDatarelawancoba> {
                             .read<DatarelawanBloc>()
                             .add(DataRelawanConnect(page: '2'));
                       },
-                      child: Text("2"),
+                      child:
+                          Text("2", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -248,7 +253,8 @@ class _HalamanDatarelawancobaState extends State<HalamanDatarelawancoba> {
                             .read<DatarelawanBloc>()
                             .add(DataRelawanConnect(page: '3'));
                       },
-                      child: Text("3"),
+                      child:
+                          Text("3", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -259,7 +265,8 @@ class _HalamanDatarelawancobaState extends State<HalamanDatarelawancoba> {
                             .read<DatarelawanBloc>()
                             .add(DataRelawanConnect(page: '4'));
                       },
-                      child: Text("4"),
+                      child:
+                          Text("4", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                   Flexible(
@@ -270,7 +277,8 @@ class _HalamanDatarelawancobaState extends State<HalamanDatarelawancoba> {
                             .read<DatarelawanBloc>()
                             .add(DataRelawanConnect(page: page.toString()));
                       },
-                      child: Text(">"),
+                      child:
+                          Text(">", style: textpoppin.copyWith(color: putih)),
                     ),
                   ),
                 ],

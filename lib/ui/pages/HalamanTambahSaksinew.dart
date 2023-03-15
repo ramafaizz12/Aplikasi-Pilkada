@@ -86,27 +86,23 @@ class _HalamanTambahSaksiNewState extends State<HalamanTambahSaksiNew> {
           builder: (context, state) {
             if (state is DatasaksiUpdate) {
               if (state.update == true) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: 'Data Berhasil Disimpan',
-                      onConfirmBtnTap: () {
-                        Navigator.pop(context);
-                      },
-                      confirmBtnColor: colorbiru,
-                      confirmBtnTextStyle: textpoppin.copyWith(color: putih));
-                });
+                QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    text: 'Data Berhasil Disimpan',
+                    onConfirmBtnTap: () {
+                      Navigator.pop(context);
+                    },
+                    confirmBtnColor: colorbiru,
+                    confirmBtnTextStyle: textpoppin.copyWith(color: putih));
               }
               if (state.update == false) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.error,
-                      text: 'Data Gagal Disimpan',
-                      confirmBtnColor: colorbiru,
-                      confirmBtnTextStyle: textpoppin);
-                });
+                QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    text: 'Data Gagal Disimpan',
+                    confirmBtnColor: colorbiru,
+                    confirmBtnTextStyle: textpoppin);
               }
             }
 
